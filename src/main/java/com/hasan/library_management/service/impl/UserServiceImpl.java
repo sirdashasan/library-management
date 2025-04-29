@@ -9,6 +9,7 @@ import com.hasan.library_management.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -18,10 +19,10 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public UserResponseDto createUser(UserRequestDto userRequestDto) {
-        User user = UserMapper.toEntity(userRequestDto);
-        user = userRepository.save(user);
-        return UserMapper.toResponseDto(user);
+    public List<UserResponseDto> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(UserMapper::toResponseDto)
+                .toList();
     }
 
     @Override
@@ -30,6 +31,15 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
         return UserMapper.toResponseDto(user);
     }
+
+
+    @Override
+    public UserResponseDto createUser(UserRequestDto userRequestDto) {
+        User user = UserMapper.toEntity(userRequestDto);
+        user = userRepository.save(user);
+        return UserMapper.toResponseDto(user);
+    }
+
 
     @Override
     public UserResponseDto updateUser(UUID id, UserRequestDto userRequestDto) {
