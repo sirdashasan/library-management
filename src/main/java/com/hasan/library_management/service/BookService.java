@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.UUID;
 
 public interface BookService {
-    BookResponseDto createBook(BookRequestDto bookRequestDto);
-    BookResponseDto getBookById(UUID id);
     List<BookResponseDto> getAllBooks();
+    BookResponseDto getBookById(UUID id);
+    BookResponseDto createBook(BookRequestDto bookRequestDto);
     BookResponseDto updateBook(UUID id, BookRequestDto bookRequestDto);
     void deleteBook(UUID id);
 

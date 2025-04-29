@@ -22,19 +22,20 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
 
     @Override
-    public BookResponseDto getBookById(UUID id) {
-        Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Book not found with id: " + id));
-        return BookMapper.toResponseDto(book);
-    }
-
-    @Override
     public List<BookResponseDto> getAllBooks() {
         return bookRepository.findAll()
                 .stream()
                 .map(BookMapper::toResponseDto)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public BookResponseDto getBookById(UUID id) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Book not found with id: " + id));
+        return BookMapper.toResponseDto(book);
+    }
+
 
     @Override
     public BookResponseDto createBook(BookRequestDto bookRequestDto) {
