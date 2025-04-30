@@ -3,10 +3,12 @@ package com.hasan.library_management.service.impl;
 import com.hasan.library_management.dto.request.UserRequestDto;
 import com.hasan.library_management.dto.response.UserResponseDto;
 import com.hasan.library_management.entity.User;
+import com.hasan.library_management.exceptions.ApiException;
 import com.hasan.library_management.mapper.UserMapper;
 import com.hasan.library_management.repository.UserRepository;
 import com.hasan.library_management.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,13 +30,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto getUserById(UUID id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                .orElseThrow(() -> new ApiException("User not found with id: " + id, HttpStatus.NOT_FOUND));
         return UserMapper.toResponseDto(user);
     }
 
 
     @Override
     public UserResponseDto createUser(UserRequestDto userRequestDto) {
+
+        userRepository.findByEmail(userRequestDto.getEmail()).ifPresent(u -> {
+            throw new ApiException("Email is already registered: " + userRequestDto.getEmail(), HttpStatus.CONFLICT);
+        });
+
         User user = UserMapper.toEntity(userRequestDto);
         user = userRepository.save(user);
         return UserMapper.toResponseDto(user);
@@ -44,7 +51,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto updateUser(UUID id, UserRequestDto userRequestDto) {
         User existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                .orElseThrow(() -> new ApiException("User not found with id: " + id, HttpStatus.NOT_FOUND));
 
         existingUser.setName(userRequestDto.getName());
         existingUser.setEmail(userRequestDto.getEmail());
@@ -58,7 +65,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(UUID id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                .orElseThrow(() -> new ApiException("User not found with id: " + id, HttpStatus.NOT_FOUND));
         userRepository.delete(user);
     }
 }
