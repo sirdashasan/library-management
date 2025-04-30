@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -35,4 +36,7 @@ public class Book {
     @Column(nullable = false)
     @Builder.Default
     private boolean available = true;
+
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
+    private List<BorrowRecord> borrowRecords;
 }
