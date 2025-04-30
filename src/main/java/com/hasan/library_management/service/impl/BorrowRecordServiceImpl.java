@@ -12,6 +12,7 @@ import com.hasan.library_management.repository.BorrowRecordRepository;
 import com.hasan.library_management.repository.UserRepository;
 import com.hasan.library_management.service.BorrowRecordService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BorrowRecordServiceImpl implements BorrowRecordService {
 
     private final BorrowRecordRepository borrowRecordRepository;
@@ -30,6 +32,7 @@ public class BorrowRecordServiceImpl implements BorrowRecordService {
 
     @Override
     public List<BorrowRecordResponseDto> getAll() {
+        log.info("Fetching all borrow records");
         return borrowRecordRepository.findAll()
                 .stream()
                 .map(BorrowRecordMapper::toResponseDto)
@@ -38,29 +41,47 @@ public class BorrowRecordServiceImpl implements BorrowRecordService {
 
     @Override
     public BorrowRecordResponseDto borrowBook(BorrowRecordRequestDto requestDto) {
+        log.info("Processing borrow request: userId={}, bookId={}", requestDto.getUserId(), requestDto.getBookId());
+
         Book book = bookRepository.findById(requestDto.getBookId())
-                .orElseThrow(() -> new ApiException("Book not found with id: " + requestDto.getBookId(), HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> {
+                    log.warn("Book not found with ID: {}", requestDto.getBookId());
+                    return new ApiException("Book not found with id: " + requestDto.getBookId(), HttpStatus.NOT_FOUND);
+                });
+
         if (!book.isAvailable()) {
+            log.warn("Book with ID {} is not available for borrowing", requestDto.getBookId());
             throw new ApiException("Book is currently not available for borrowing", HttpStatus.BAD_REQUEST);
         }
 
         User user = userRepository.findById(requestDto.getUserId())
-                .orElseThrow(() -> new ApiException("User not found with id: " + requestDto.getUserId(), HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> {
+                    log.warn("User not found with ID: {}", requestDto.getUserId());
+                    return new ApiException("User not found with id: " + requestDto.getUserId(), HttpStatus.NOT_FOUND);
+                });
 
         BorrowRecord record = BorrowRecordMapper.toEntity(requestDto, user, book);
         book.setAvailable(false);
+
         bookRepository.save(book);
         borrowRecordRepository.save(record);
 
+        log.info("Borrow record created successfully: recordId={}", record.getId());
         return BorrowRecordMapper.toResponseDto(record);
     }
 
     @Override
     public BorrowRecordResponseDto returnBook(UUID borrowRecordId) {
+        log.info("Processing return for borrow record ID: {}", borrowRecordId);
+
         BorrowRecord record = borrowRecordRepository.findById(borrowRecordId)
-                .orElseThrow(() -> new ApiException("Borrow record not found with id: " + borrowRecordId, HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> {
+                    log.warn("Borrow record not found with ID: {}", borrowRecordId);
+                    return new ApiException("Borrow record not found with id: " + borrowRecordId, HttpStatus.NOT_FOUND);
+                });
 
         if (record.isReturned()) {
+            log.warn("Borrow record with ID {} is already marked as returned", borrowRecordId);
             throw new ApiException("This book has already been returned", HttpStatus.BAD_REQUEST);
         }
 
@@ -73,12 +94,16 @@ public class BorrowRecordServiceImpl implements BorrowRecordService {
         bookRepository.save(book);
         borrowRecordRepository.save(record);
 
+        log.info("Book returned successfully for record ID: {}", borrowRecordId);
         return BorrowRecordMapper.toResponseDto(record);
     }
 
     @Override
     public List<BorrowRecordResponseDto> getBorrowRecordsByUserId(UUID userId) {
+        log.info("Fetching borrow records for user ID: {}", userId);
+
         if (!userRepository.existsById(userId)) {
+            log.warn("User not found with ID: {}", userId);
             throw new ApiException("User not found with id: " + userId, HttpStatus.NOT_FOUND);
         }
 
@@ -90,6 +115,7 @@ public class BorrowRecordServiceImpl implements BorrowRecordService {
 
     @Override
     public List<BorrowRecordResponseDto> getOverdueRecords() {
+        log.info("Fetching overdue borrow records (not returned, due date before today)");
         return borrowRecordRepository.findByReturnedFalseAndDueDateBefore(LocalDate.now())
                 .stream()
                 .map(BorrowRecordMapper::toResponseDto)
