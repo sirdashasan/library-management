@@ -78,9 +78,14 @@ public class GlobalExceptionHandler {
         String field = "request";
         String message = "Invalid JSON format.";
 
-        if (rawMessage != null && rawMessage.contains("Role")) {
-            field = "role";
-            message = "Invalid role value. Must be 'LIBRARIAN' or 'PATRON'.";
+        if (rawMessage != null) {
+            if (rawMessage.contains("Role")) {
+                field = "role";
+                message = "Invalid role value. Must be 'LIBRARIAN' or 'PATRON'.";
+            } else if (rawMessage.contains("LocalDate")) {
+                field = "date";
+                message = "Date must be in 'yyyy-MM-dd' format, e.g., '2025-04-20'.";
+            }
         }
 
         Map<String, String> errorMap = new HashMap<>();

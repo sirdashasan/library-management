@@ -1,16 +1,16 @@
 package com.hasan.library_management.service;
 
-import com.hasan.library_management.dto.request.BorrowRequestDto;
-import com.hasan.library_management.dto.response.BorrowResponseDto;
+import com.hasan.library_management.dto.request.BorrowRecordRequestDto;
+import com.hasan.library_management.dto.response.BorrowRecordResponseDto;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface BorrowRecordService {
 
-    List<BorrowResponseDto> getAll();
-    BorrowResponseDto borrowBook(BorrowRequestDto requestDto);
-    BorrowResponseDto returnBook(UUID borrowRecordId);
-    List<BorrowResponseDto> getBorrowRecordsByUserId(UUID userId);
-    List<BorrowResponseDto> getOverdueRecords();
+    List<BorrowRecordResponseDto> getAll();
+    BorrowRecordResponseDto borrowBook(BorrowRecordRequestDto requestDto);
+    BorrowRecordResponseDto returnBook(UUID borrowRecordId);
+    List<BorrowRecordResponseDto> getBorrowRecordsByUserId(UUID userId);
+    List<BorrowRecordResponseDto> getOverdueRecords();
 }

@@ -11,8 +11,10 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BorrowResponseDto {
+public class BorrowRecordResponseDto {
 
+    private String bookTitle;
+    private String userName;
     private UUID id;
     private UUID userId;
     private UUID bookId;
