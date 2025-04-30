@@ -23,11 +23,20 @@ public class GlobalExceptionHandler {
      * Typically used for domain-related errors (e.g., "User not found").
      **/
     @ExceptionHandler(ApiException.class)
-    public ResponseEntity<ExceptionResponse> handleApiException(ApiException apiException) {
-        return new ResponseEntity<>(new ExceptionResponse(
-                apiException.getMessage(),
-                apiException.getHttpStatus().value(),
-                LocalDateTime.now()), apiException.getHttpStatus());
+    public ResponseEntity<Object> handleApiException(ApiException apiException) {
+        List<Map<String, String>> errors = new ArrayList<>();
+
+        Map<String, String> errorMap = new HashMap<>();
+        errorMap.put("field", "internal");
+        errorMap.put("message", apiException.getMessage());
+        errors.add(errorMap);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("timestamp", LocalDateTime.now());
+        response.put("status", apiException.getHttpStatus().value());
+        response.put("errors", errors);
+
+        return new ResponseEntity<>(response, apiException.getHttpStatus());
     }
 
     /**

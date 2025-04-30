@@ -4,6 +4,7 @@ package com.hasan.library_management.controller;
 import com.hasan.library_management.dto.request.BookRequestDto;
 import com.hasan.library_management.dto.response.BookResponseDto;
 import com.hasan.library_management.service.BookService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,14 +34,14 @@ public class BookController {
 
 
     @PostMapping
-    public ResponseEntity<BookResponseDto> createBook(@RequestBody BookRequestDto bookRequestDto) {
+    public ResponseEntity<BookResponseDto> createBook(@RequestBody @Valid BookRequestDto bookRequestDto) {
         return ResponseEntity.ok(bookService.createBook(bookRequestDto));
     }
 
 
     @PutMapping("/{id}")
     public ResponseEntity<BookResponseDto> updateBook(@PathVariable UUID id,
-                                                      @RequestBody BookRequestDto bookRequestDto) {
+                                                      @RequestBody @Valid BookRequestDto bookRequestDto) {
         return ResponseEntity.ok(bookService.updateBook(id, bookRequestDto));
     }
 
