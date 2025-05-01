@@ -34,6 +34,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Open endpoints
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/books/availability-stream").permitAll()
 
                         // Book access
                         .requestMatchers(HttpMethod.GET, "/books/**").hasAnyRole("LIBRARIAN", "PATRON")

@@ -10,6 +10,7 @@ import com.hasan.library_management.mapper.BorrowRecordMapper;
 import com.hasan.library_management.repository.BookRepository;
 import com.hasan.library_management.repository.BorrowRecordRepository;
 import com.hasan.library_management.repository.UserRepository;
+import com.hasan.library_management.service.BookAvailabilityService;
 import com.hasan.library_management.service.BorrowRecordService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,9 @@ public class BorrowRecordServiceImpl implements BorrowRecordService {
     private final BorrowRecordRepository borrowRecordRepository;
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
+
+    // Used for emitting real-time book availability events (Reactive - WebFlux)
+    private final BookAvailabilityService bookAvailabilityService;
 
     @Override
     public List<BorrowRecordResponseDto> getAll() {
@@ -62,6 +66,8 @@ public class BorrowRecordServiceImpl implements BorrowRecordService {
 
         BorrowRecord record = BorrowRecordMapper.toEntity(requestDto, user, book);
         book.setAvailable(false);
+        // Emit event to notify subscribers that the book has been borrowed (Reactive - WebFlux)
+        bookAvailabilityService.publishAvailabilityChange(book.getId().toString(), false);
 
         bookRepository.save(book);
         borrowRecordRepository.save(record);
@@ -90,6 +96,8 @@ public class BorrowRecordServiceImpl implements BorrowRecordService {
 
         Book book = record.getBook();
         book.setAvailable(true);
+        // Emit event to notify subscribers that the book has been returned and is now available (Reactive - WebFlux)
+        bookAvailabilityService.publishAvailabilityChange(book.getId().toString(), true);
 
         bookRepository.save(book);
         borrowRecordRepository.save(record);
