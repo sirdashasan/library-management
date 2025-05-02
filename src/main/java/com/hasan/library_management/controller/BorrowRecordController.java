@@ -6,6 +6,7 @@ import com.hasan.library_management.service.BorrowRecordService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,6 +37,12 @@ public class BorrowRecordController {
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<BorrowRecordResponseDto>> getRecordsByUserId(@PathVariable UUID userId) {
         return ResponseEntity.ok(borrowRecordService.getBorrowRecordsByUserId(userId));
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<List<BorrowRecordResponseDto>> getOwnRecords(Authentication authentication) {
+        String email = authentication.getName();
+        return ResponseEntity.ok(borrowRecordService.getOwnBorrowRecords(email));
     }
 
     @GetMapping("/overdue")

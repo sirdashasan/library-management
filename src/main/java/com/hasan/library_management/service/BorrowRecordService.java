@@ -12,5 +12,6 @@ public interface BorrowRecordService {
     BorrowRecordResponseDto borrowBook(BorrowRecordRequestDto requestDto);
     BorrowRecordResponseDto returnBook(UUID borrowRecordId);
     List<BorrowRecordResponseDto> getBorrowRecordsByUserId(UUID userId);
+    List<BorrowRecordResponseDto> getOwnBorrowRecords(String emailFromToken);
     List<BorrowRecordResponseDto> getOverdueRecords();
 }

@@ -122,6 +122,19 @@ public class BorrowRecordServiceImpl implements BorrowRecordService {
     }
 
     @Override
+    public List<BorrowRecordResponseDto> getOwnBorrowRecords(String emailFromToken) {
+        User user = userRepository.findByEmail(emailFromToken)
+                .orElseThrow(() -> new ApiException("User not found with email: " + emailFromToken, HttpStatus.NOT_FOUND));
+
+        log.info("Fetching borrow records for authenticated user ID: {}", user.getId());
+
+        return borrowRecordRepository.findByUserId(user.getId())
+                .stream()
+                .map(BorrowRecordMapper::toResponseDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<BorrowRecordResponseDto> getOverdueRecords() {
         log.info("Fetching overdue borrow records (not returned, due date before today)");
         return borrowRecordRepository.findByReturnedFalseAndDueDateBefore(LocalDate.now())
