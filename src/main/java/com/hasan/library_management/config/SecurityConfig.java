@@ -43,6 +43,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/books/**").hasRole("LIBRARIAN")
 
                         // User access
+                        .requestMatchers(HttpMethod.GET, "/users/me").hasAnyRole("PATRON", "LIBRARIAN")
                         .requestMatchers(HttpMethod.GET, "/users/**").hasRole("LIBRARIAN")
                         .requestMatchers(HttpMethod.PUT, "/users/**").hasRole("LIBRARIAN")
                         .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("LIBRARIAN")

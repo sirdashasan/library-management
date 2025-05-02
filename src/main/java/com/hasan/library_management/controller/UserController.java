@@ -6,6 +6,7 @@ import com.hasan.library_management.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +28,13 @@ public class UserController {
     public ResponseEntity<UserResponseDto> getUserById(@PathVariable UUID id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserResponseDto> getOwnDetails(Authentication authentication) {
+        String email = authentication.getName();
+        return ResponseEntity.ok(userService.getOwnUserDetails(email));
+    }
+
 
     @PostMapping
     public ResponseEntity<UserResponseDto> createUser(@RequestBody @Valid UserRequestDto userRequestDto) {

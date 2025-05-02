@@ -2,6 +2,7 @@ package com.hasan.library_management.service.impl;
 
 import com.hasan.library_management.dto.request.UserRequestDto;
 import com.hasan.library_management.dto.response.UserResponseDto;
+import com.hasan.library_management.entity.Role;
 import com.hasan.library_management.entity.User;
 import com.hasan.library_management.exceptions.ApiException;
 import com.hasan.library_management.mapper.UserMapper;
@@ -38,6 +39,13 @@ public class UserServiceImpl implements UserService {
                     log.warn("User not found with ID: {}", id);
                     return new ApiException("User not found with id: " + id, HttpStatus.NOT_FOUND);
                 });
+        return UserMapper.toResponseDto(user);
+    }
+
+    @Override
+    public UserResponseDto getOwnUserDetails(String emailFromToken) {
+        User user = userRepository.findByEmail(emailFromToken)
+                .orElseThrow(() -> new ApiException("User not found", HttpStatus.NOT_FOUND));
         return UserMapper.toResponseDto(user);
     }
 
