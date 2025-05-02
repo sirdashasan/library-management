@@ -22,12 +22,13 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Override
     public List<UserResponseDto> getAllUsers() {
         log.info("Fetching all users");
         return userRepository.findAll().stream()
-                .map(UserMapper::toResponseDto)
+                .map(userMapper::toResponseDto)
                 .toList();
     }
 
@@ -39,14 +40,14 @@ public class UserServiceImpl implements UserService {
                     log.warn("User not found with ID: {}", id);
                     return new ApiException("User not found with id: " + id, HttpStatus.NOT_FOUND);
                 });
-        return UserMapper.toResponseDto(user);
+        return userMapper.toResponseDto(user);
     }
 
     @Override
     public UserResponseDto getOwnUserDetails(String emailFromToken) {
         User user = userRepository.findByEmail(emailFromToken)
                 .orElseThrow(() -> new ApiException("User not found", HttpStatus.NOT_FOUND));
-        return UserMapper.toResponseDto(user);
+        return userMapper.toResponseDto(user);
     }
 
 
@@ -59,9 +60,9 @@ public class UserServiceImpl implements UserService {
             throw new ApiException("Email is already registered: " + userRequestDto.getEmail(), HttpStatus.CONFLICT);
         });
 
-        User user = UserMapper.toEntity(userRequestDto);
+        User user = userMapper.toEntity(userRequestDto);
         user = userRepository.save(user);
-        return UserMapper.toResponseDto(user);
+        return userMapper.toResponseDto(user);
     }
 
 
@@ -82,7 +83,7 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(existingUser);
         log.info("User updated successfully with ID: {}", id);
-        return UserMapper.toResponseDto(existingUser);
+        return userMapper.toResponseDto(existingUser);
     }
 
     @Override

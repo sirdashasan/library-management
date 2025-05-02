@@ -3,10 +3,12 @@ package com.hasan.library_management.mapper;
 import com.hasan.library_management.dto.request.UserRequestDto;
 import com.hasan.library_management.dto.response.UserResponseDto;
 import com.hasan.library_management.entity.User;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserMapper {
 
-    public static User toEntity(UserRequestDto dto) {
+    public User toEntity(UserRequestDto dto) {
 
         return User.builder()
                 .name(dto.getName())
@@ -17,7 +19,7 @@ public class UserMapper {
                 .build();
     }
 
-    public static UserResponseDto toResponseDto(User user) {
+    public UserResponseDto toResponseDto(User user) {
 
         return UserResponseDto.builder()
                 .id(user.getId())
