@@ -24,13 +24,14 @@ import java.util.stream.Collectors;
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
+    private final BookMapper bookMapper;
 
     @Override
     public List<BookResponseDto> getAllBooks() {
         log.info("Fetching all books");
         return bookRepository.findAll()
                 .stream()
-                .map(BookMapper::toResponseDto)
+                .map(bookMapper::toResponseDto)
                 .collect(Collectors.toList());
     }
 
@@ -42,7 +43,7 @@ public class BookServiceImpl implements BookService {
                     log.warn("Book not found with ID: {}", id);
                     return new ApiException("Book not found with id: " + id, HttpStatus.NOT_FOUND);
                 });
-        return BookMapper.toResponseDto(book);
+        return bookMapper.toResponseDto(book);
     }
 
 
@@ -58,10 +59,10 @@ public class BookServiceImpl implements BookService {
             throw new ApiException("A book with this ISBN already exists: " + bookRequestDto.getIsbn(), HttpStatus.CONFLICT);
         }
 
-        Book book = BookMapper.toEntity(bookRequestDto);
+        Book book = bookMapper.toEntity(bookRequestDto);
         book = bookRepository.save(book);
         log.info("Book created successfully with ID: {}", book.getId());
-        return BookMapper.toResponseDto(book);
+        return bookMapper.toResponseDto(book);
     }
 
 
@@ -75,10 +76,10 @@ public class BookServiceImpl implements BookService {
                     return new ApiException("Book not found with id: " + id, HttpStatus.NOT_FOUND);
                 });
 
-        BookMapper.updateEntity(existingBook, bookRequestDto);
+        bookMapper.updateEntity(existingBook, bookRequestDto);
         existingBook = bookRepository.save(existingBook);
         log.info("Book updated successfully with ID: {}", id);
-        return BookMapper.toResponseDto(existingBook);
+        return bookMapper.toResponseDto(existingBook);
     }
 
     @Override
@@ -97,27 +98,27 @@ public class BookServiceImpl implements BookService {
     public Page<BookResponseDto> searchByTitle(String title, Pageable pageable) {
         log.info("Searching books by title: {}", title);
         return bookRepository.findByTitleContainingIgnoreCase(title, pageable)
-                .map(BookMapper::toResponseDto);
+                .map(bookMapper::toResponseDto);
     }
 
     @Override
     public Page<BookResponseDto> searchByAuthor(String author, Pageable pageable) {
         log.info("Searching books by author: {}", author);
         return bookRepository.findByAuthorContainingIgnoreCase(author, pageable)
-                .map(BookMapper::toResponseDto);
+                .map(bookMapper::toResponseDto);
     }
 
     @Override
     public Page<BookResponseDto> searchByIsbn(String isbn, Pageable pageable) {
         log.info("Searching books by ISBN: {}", isbn);
         return bookRepository.findByIsbnContainingIgnoreCase(isbn, pageable)
-                .map(BookMapper::toResponseDto);
+                .map(bookMapper::toResponseDto);
     }
 
     @Override
     public Page<BookResponseDto> searchByGenre(String genre, Pageable pageable) {
         log.info("Searching books by genre: {}", genre);
         return bookRepository.findByGenreContainingIgnoreCase(genre, pageable)
-                .map(BookMapper::toResponseDto);
+                .map(bookMapper::toResponseDto);
     }
 }

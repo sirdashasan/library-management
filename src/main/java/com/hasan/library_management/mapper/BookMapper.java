@@ -3,10 +3,12 @@ package com.hasan.library_management.mapper;
 import com.hasan.library_management.dto.request.BookRequestDto;
 import com.hasan.library_management.dto.response.BookResponseDto;
 import com.hasan.library_management.entity.Book;
+import org.springframework.stereotype.Component;
 
+@Component
 public class BookMapper {
 
-    public static Book toEntity(BookRequestDto dto) {
+    public Book toEntity(BookRequestDto dto) {
         return Book.builder()
                 .title(dto.getTitle())
                 .author(dto.getAuthor())
@@ -17,7 +19,7 @@ public class BookMapper {
                 .build();
     }
 
-    public static BookResponseDto toResponseDto(Book book) {
+    public BookResponseDto toResponseDto(Book book) {
         return BookResponseDto.builder()
                 .id(book.getId())
                 .title(book.getTitle())
@@ -29,7 +31,7 @@ public class BookMapper {
                 .build();
     }
 
-    public static void updateEntity(Book book, BookRequestDto dto) {
+    public void updateEntity(Book book, BookRequestDto dto) {
         book.setTitle(dto.getTitle());
         book.setAuthor(dto.getAuthor());
         book.setIsbn(dto.getIsbn());
