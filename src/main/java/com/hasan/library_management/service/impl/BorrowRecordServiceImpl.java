@@ -31,6 +31,8 @@ public class BorrowRecordServiceImpl implements BorrowRecordService {
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
 
+    private final BorrowRecordMapper borrowRecordMapper;
+
     // Used for emitting real-time book availability events (Reactive - WebFlux)
     private final BookAvailabilityService bookAvailabilityService;
 
@@ -39,7 +41,7 @@ public class BorrowRecordServiceImpl implements BorrowRecordService {
         log.info("Fetching all borrow records");
         return borrowRecordRepository.findAll()
                 .stream()
-                .map(BorrowRecordMapper::toResponseDto)
+                .map(borrowRecordMapper::toResponseDto)
                 .collect(Collectors.toList());
     }
 
@@ -64,7 +66,7 @@ public class BorrowRecordServiceImpl implements BorrowRecordService {
                     return new ApiException("User not found with id: " + requestDto.getUserId(), HttpStatus.NOT_FOUND);
                 });
 
-        BorrowRecord record = BorrowRecordMapper.toEntity(requestDto, user, book);
+        BorrowRecord record = borrowRecordMapper.toEntity(requestDto, user, book);
         book.setAvailable(false);
         // Emit event to notify subscribers that the book has been borrowed (Reactive - WebFlux)
         bookAvailabilityService.publishAvailabilityChange(book.getId().toString(), false);
@@ -73,7 +75,7 @@ public class BorrowRecordServiceImpl implements BorrowRecordService {
         borrowRecordRepository.save(record);
 
         log.info("Borrow record created successfully: recordId={}", record.getId());
-        return BorrowRecordMapper.toResponseDto(record);
+        return borrowRecordMapper.toResponseDto(record);
     }
 
     @Override
@@ -103,7 +105,7 @@ public class BorrowRecordServiceImpl implements BorrowRecordService {
         borrowRecordRepository.save(record);
 
         log.info("Book returned successfully for record ID: {}", borrowRecordId);
-        return BorrowRecordMapper.toResponseDto(record);
+        return borrowRecordMapper.toResponseDto(record);
     }
 
     @Override
@@ -117,7 +119,7 @@ public class BorrowRecordServiceImpl implements BorrowRecordService {
 
         return borrowRecordRepository.findByUserId(userId)
                 .stream()
-                .map(BorrowRecordMapper::toResponseDto)
+                .map(borrowRecordMapper::toResponseDto)
                 .collect(Collectors.toList());
     }
 
@@ -130,7 +132,7 @@ public class BorrowRecordServiceImpl implements BorrowRecordService {
 
         return borrowRecordRepository.findByUserId(user.getId())
                 .stream()
-                .map(BorrowRecordMapper::toResponseDto)
+                .map(borrowRecordMapper::toResponseDto)
                 .collect(Collectors.toList());
     }
 
@@ -139,7 +141,7 @@ public class BorrowRecordServiceImpl implements BorrowRecordService {
         log.info("Fetching overdue borrow records (not returned, due date before today)");
         return borrowRecordRepository.findByReturnedFalseAndDueDateBefore(LocalDate.now())
                 .stream()
-                .map(BorrowRecordMapper::toResponseDto)
+                .map(borrowRecordMapper::toResponseDto)
                 .collect(Collectors.toList());
     }
 }
