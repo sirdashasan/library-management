@@ -51,19 +51,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    @Override
-    public UserResponseDto createUser(UserRequestDto userRequestDto) {
-        log.info("Creating new user with email: {}", userRequestDto.getEmail());
-
-        userRepository.findByEmail(userRequestDto.getEmail()).ifPresent(u -> {
-            log.warn("Email already registered: {}", userRequestDto.getEmail());
-            throw new ApiException("Email is already registered: " + userRequestDto.getEmail(), HttpStatus.CONFLICT);
-        });
-
-        User user = userMapper.toEntity(userRequestDto);
-        user = userRepository.save(user);
-        return userMapper.toResponseDto(user);
-    }
 
 
     @Override

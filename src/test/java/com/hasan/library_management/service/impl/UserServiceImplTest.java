@@ -148,57 +148,6 @@ class UserServiceImplTest {
         assertEquals("User not found", exception.getMessage());
     }
 
-    // *** createUser Tests ***
-    @Test
-    void createUser_shouldCreate_whenEmailNotExists() {
-        // Arrange
-        var requestDto = new UserRequestDto();
-        requestDto.setName("Hasan");
-        requestDto.setEmail("hasan@gmail.com");
-        requestDto.setPhoneNumber("5555555555");
-        requestDto.setPassword("123456");
-        requestDto.setRole(Role.PATRON);
-
-        when(userRepository.findByEmail("hasan@gmail.com")).thenReturn(Optional.empty());
-
-        when(userMapper.toEntity(requestDto)).thenReturn(user);
-
-        when(userRepository.save(user)).thenReturn(user);
-
-        when(userMapper.toResponseDto(user)).thenReturn(
-                new com.hasan.library_management.dto.response.UserResponseDto(
-                        user.getId(), user.getName(), user.getEmail(), user.getPhoneNumber(), user.getRole()
-                )
-        );
-
-        // Act
-        var result = userService.createUser(requestDto);
-
-        // Assert
-        assertNotNull(result);
-        assertEquals("Hasan", result.getName());
-        assertEquals("hasan@gmail.com", result.getEmail());
-    }
-
-    @Test
-    void createUser_shouldThrowException_whenEmailAlreadyExists() {
-        // Arrange
-        var requestDto = new UserRequestDto();
-        requestDto.setName("Hasan");
-        requestDto.setEmail("hasan@gmail.com");
-        requestDto.setPhoneNumber("5555555555");
-        requestDto.setPassword("123456");
-        requestDto.setRole(Role.PATRON);
-
-        when(userRepository.findByEmail("hasan@gmail.com")).thenReturn(Optional.of(user));
-
-        // Act & Assert
-        ApiException exception = assertThrows(ApiException.class, () ->
-                userService.createUser(requestDto)
-        );
-
-        assertEquals("Email is already registered: hasan@gmail.com", exception.getMessage());
-    }
 
     // *** updateUser Tests ***
     @Test

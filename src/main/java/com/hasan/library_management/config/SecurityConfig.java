@@ -36,6 +36,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/books/availability-stream").permitAll()
 
+
                         // Book access
                         .requestMatchers(HttpMethod.GET, "/books/**").hasAnyRole("LIBRARIAN", "PATRON")
                         .requestMatchers(HttpMethod.POST, "/books/**").hasRole("LIBRARIAN")
