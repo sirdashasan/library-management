@@ -50,6 +50,7 @@ class AuthControllerTest {
         }
     }
 
+    // *** register Tests ***
     @Test
     void register_shouldReturnOk_whenEmailIsNew() throws Exception {
         RegisterRequest request = new RegisterRequest();
@@ -81,6 +82,7 @@ class AuthControllerTest {
     }
 
 
+    // *** login Tests ***
     @Test
     void login_shouldReturnOk_whenCredentialsAreCorrect() throws Exception {
         AuthRequest request = new AuthRequest(email, password);
