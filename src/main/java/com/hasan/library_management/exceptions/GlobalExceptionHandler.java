@@ -3,6 +3,7 @@ package com.hasan.library_management.exceptions;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -120,5 +121,28 @@ public class GlobalExceptionHandler {
         response.put("errors", errors);
 
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+
+    /**
+     * Handles authentication failures due to incorrect credentials.
+     * Specifically catches BadCredentialsException thrown by Spring Security.
+     * Returns 401 Unauthorized with a clear error message instead of 500.
+     */
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Object> handleBadCredentials(BadCredentialsException ex) {
+        List<Map<String, String>> errors = new ArrayList<>();
+
+        Map<String, String> errorMap = new HashMap<>();
+        errorMap.put("field", "credentials");
+        errorMap.put("message", "Invalid email or password");
+        errors.add(errorMap);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("timestamp", LocalDateTime.now());
+        response.put("status", HttpStatus.UNAUTHORIZED.value());
+        response.put("errors", errors);
+
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 }
