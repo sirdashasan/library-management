@@ -35,6 +35,7 @@ public class SecurityConfig {
                         // Open endpoints
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/books/availability-stream").permitAll()
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
 
 
                         // Book access

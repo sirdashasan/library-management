@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.4.5</version>
+		<version>3.2.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.hasan</groupId>
@@ -98,11 +98,12 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- WebFlux  -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-webflux</artifactId>
+			<groupId>io.projectreactor</groupId>
+			<artifactId>reactor-core</artifactId>
+			<version>3.6.5</version>
 		</dependency>
+
 
 		<!-- JUnit 5 -->
 		<dependency>
@@ -140,6 +141,14 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- swagger -->
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+
 
 
 	</dependencies>
