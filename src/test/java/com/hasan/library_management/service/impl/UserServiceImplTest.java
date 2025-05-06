@@ -1,6 +1,8 @@
 package com.hasan.library_management.service.impl;
 
+import com.hasan.library_management.dto.request.AdminUserUpdateRequestDto;
 import com.hasan.library_management.dto.request.UserRequestDto;
+import com.hasan.library_management.dto.response.UserResponseDto;
 import com.hasan.library_management.entity.Role;
 import com.hasan.library_management.entity.User;
 import com.hasan.library_management.exceptions.ApiException;
@@ -155,7 +157,7 @@ class UserServiceImplTest {
         // Arrange
         UUID id = userId;
 
-        var requestDto = new UserRequestDto();
+        var requestDto = new AdminUserUpdateRequestDto();
         requestDto.setName("Updated Hasan");
         requestDto.setEmail("updatedhasan@gmail.com");
         requestDto.setPhoneNumber("5559990000");
@@ -165,7 +167,7 @@ class UserServiceImplTest {
         when(userRepository.save(user)).thenReturn(user);
 
         when(userMapper.toResponseDto(user)).thenReturn(
-                new com.hasan.library_management.dto.response.UserResponseDto(
+                new UserResponseDto(
                         id,
                         requestDto.getName(),
                         requestDto.getEmail(),
@@ -184,18 +186,19 @@ class UserServiceImplTest {
         assertEquals(Role.LIBRARIAN, result.getRole());
     }
 
+
     @Test
     void updateUser_shouldThrowException_whenUserNotFound() {
         // Arrange
         UUID unknownId = UUID.randomUUID();
 
-        var requestDto = new UserRequestDto();
+        var requestDto = new AdminUserUpdateRequestDto();
         requestDto.setName("Not Updated Hasan");
         requestDto.setEmail("updatedhasan@gmail.com");
         requestDto.setPhoneNumber("5559990000");
         requestDto.setRole(Role.LIBRARIAN);
 
-        // The user with this ID cannot be found.
+
         when(userRepository.findById(unknownId)).thenReturn(Optional.empty());
 
         // Act & Assert
@@ -205,6 +208,7 @@ class UserServiceImplTest {
 
         assertEquals("User not found with id: " + unknownId, exception.getMessage());
     }
+
 
     // *** deleteUser Tests ***
     @Test

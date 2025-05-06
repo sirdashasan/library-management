@@ -1,5 +1,6 @@
 package com.hasan.library_management.service.impl;
 
+import com.hasan.library_management.dto.request.AdminUserUpdateRequestDto;
 import com.hasan.library_management.dto.request.UserRequestDto;
 import com.hasan.library_management.dto.response.UserResponseDto;
 import com.hasan.library_management.entity.Role;
@@ -54,7 +55,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UserResponseDto updateUser(UUID id, UserRequestDto userRequestDto) {
+    public UserResponseDto updateUser(UUID id, AdminUserUpdateRequestDto dto) {
         log.info("Updating user with ID: {}", id);
 
         User existingUser = userRepository.findById(id)
@@ -63,15 +64,14 @@ public class UserServiceImpl implements UserService {
                     return new ApiException("User not found with id: " + id, HttpStatus.NOT_FOUND);
                 });
 
-        existingUser.setName(userRequestDto.getName());
-        existingUser.setEmail(userRequestDto.getEmail());
-        existingUser.setPhoneNumber(userRequestDto.getPhoneNumber());
-        existingUser.setRole(userRequestDto.getRole());
+        userMapper.updateEntityFromAdminDto(existingUser, dto);
 
         userRepository.save(existingUser);
         log.info("User updated successfully with ID: {}", id);
+
         return userMapper.toResponseDto(existingUser);
     }
+
 
     @Override
     public void deleteUser(UUID id) {

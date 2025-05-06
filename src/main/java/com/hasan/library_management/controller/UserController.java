@@ -1,5 +1,6 @@
 package com.hasan.library_management.controller;
 
+import com.hasan.library_management.dto.request.AdminUserUpdateRequestDto;
 import com.hasan.library_management.dto.request.UserRequestDto;
 import com.hasan.library_management.dto.response.UserResponseDto;
 import com.hasan.library_management.service.UserService;
@@ -73,9 +74,10 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "User not found")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDto> updateUser(@PathVariable UUID id,
-                                                      @RequestBody @Valid UserRequestDto userRequestDto) {
-        return ResponseEntity.ok(userService.updateUser(id, userRequestDto));
+    public ResponseEntity<UserResponseDto> updateUser(
+            @PathVariable UUID id,
+            @RequestBody @Valid AdminUserUpdateRequestDto dto) {
+        return ResponseEntity.ok(userService.updateUser(id, dto));
     }
 
     @Operation(

@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -26,9 +27,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestPropertySource(properties = {
+        "server.servlet.context-path="
+})
 class BorrowRecordControllerTest {
 
     @Autowired
@@ -432,6 +436,8 @@ class BorrowRecordControllerTest {
     // *** getOverdueRecords Tests ***
     @Test
     void getOverdueRecords_shouldReturnList_whenOverdueExists() throws Exception {
+
+
         // 1. Create a new book
         BookRequestDto book = new BookRequestDto();
         book.setTitle("Overdue Book");
@@ -476,8 +482,9 @@ class BorrowRecordControllerTest {
         mockMvc.perform(get("/borrow-records/overdue")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].bookTitle").value("Overdue Book"))
-                .andExpect(jsonPath("$[0].returned").value(false));
+                .andExpect(jsonPath("$[*].bookTitle").value(org.hamcrest.Matchers.hasItem("Overdue Book")))
+                .andExpect(jsonPath("$[?(@.bookTitle == 'Overdue Book')].returned").value(org.hamcrest.Matchers.contains(false)));
+
     }
 
 

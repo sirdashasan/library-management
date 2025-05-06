@@ -1,5 +1,6 @@
 package com.hasan.library_management.service;
 
+import com.hasan.library_management.dto.request.AdminUserUpdateRequestDto;
 import com.hasan.library_management.dto.request.UserRequestDto;
 import com.hasan.library_management.dto.response.UserResponseDto;
 
@@ -11,6 +12,6 @@ public interface UserService {
     UserResponseDto getUserById(UUID id);
     UserResponseDto getOwnUserDetails(String email);
 
-    UserResponseDto updateUser(UUID id, UserRequestDto userRequestDto);
+    UserResponseDto updateUser(UUID id, AdminUserUpdateRequestDto dto);
     void deleteUser(UUID id);
 }

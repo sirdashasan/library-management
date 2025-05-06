@@ -1,5 +1,6 @@
 package com.hasan.library_management.mapper;
 
+import com.hasan.library_management.dto.request.AdminUserUpdateRequestDto;
 import com.hasan.library_management.dto.request.UserRequestDto;
 import com.hasan.library_management.dto.response.UserResponseDto;
 import com.hasan.library_management.entity.User;
@@ -29,4 +30,12 @@ public class UserMapper {
                 .role(user.getRole())
                 .build();
     }
+    public User updateEntityFromAdminDto(User user, AdminUserUpdateRequestDto dto) {
+        user.setName(dto.getName());
+        user.setEmail(dto.getEmail());
+        user.setPhoneNumber(dto.getPhoneNumber());
+        user.setRole(dto.getRole());
+        return user;
+    }
+
 }
