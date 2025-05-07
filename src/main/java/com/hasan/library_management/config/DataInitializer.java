@@ -50,13 +50,17 @@ public class DataInitializer implements CommandLineRunner {
         Book book1 = createBookIfMissing("9780451524932", "The Feeling Good Book", "Andrew Sharman", LocalDate.of(1980, 7, 1), "Personal Development");
         Book book2 = createBookIfMissing("9780743273565", "The Great Gatsby", "F. Scott Fitzgerald", LocalDate.of(1925, 4, 10), "Classic");
         Book book3 = createBookIfMissing("9780439023528", "The Hunger Games", "Suzanne Collins", LocalDate.of(2008, 9, 14), "Dystopian");
-        createBookIfMissing("9780544003415", "The Lord of the Rings", "J.R.R. Tolkien", LocalDate.of(1954, 7, 29), "Fantasy");
-        createBookIfMissing("9780307277671", "The Road", "Cormac McCarthy", LocalDate.of(2006, 9, 26), "Post-apocalyptic");
+        Book book4 = createBookIfMissing("9780544003415", "The Lord of the Rings", "J.R.R. Tolkien", LocalDate.of(1954, 7, 29), "Fantasy");
+        Book book5 = createBookIfMissing("9780307277671", "The Road", "Cormac McCarthy", LocalDate.of(2006, 9, 26), "Post-apocalyptic");
+        Book book6 = createBookIfMissing("9780061120084", "To Kill a Mockingbird", "Harper Lee", LocalDate.of(1960, 7, 11), "Classic");
+        Book book7 = createBookIfMissing("9780141439600", "Pride and Prejudice", "Jane Austen", LocalDate.of(1813, 1, 28), "Romance");
+        Book book8 = createBookIfMissing("9780307474278", "1984", "George Orwell", LocalDate.of(1949, 6, 8), "Dystopian");
+        Book book9 = createBookIfMissing("9781451673319", "Fahrenheit 451", "Ray Bradbury", LocalDate.of(1953, 10, 19), "Science Fiction");
+        Book book10 = createBookIfMissing("9780060850524", "Brave New World", "Aldous Huxley", LocalDate.of(1932, 9, 1), "Science Fiction");
 
         // Create mock overdue borrow records
         createOverdueBorrowRecordIfNotExists(patron, book1);
-        createOverdueBorrowRecordIfNotExists(patron, book2);
-        createOverdueBorrowRecordIfNotExists(patron, book3);
+
 
         System.out.println("🟢 Mock data (users, books, and overdue borrow records) loaded successfully.");
     }
@@ -78,7 +82,7 @@ public class DataInitializer implements CommandLineRunner {
                 .anyMatch(record -> !record.isReturned());
 
         if (!alreadyExists) {
-            book.setAvailable(false); // Mark book as borrowed
+            book.setAvailable(false);
             bookRepo.save(book);
 
             BorrowRecord record = BorrowRecord.builder()

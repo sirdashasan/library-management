@@ -45,6 +45,7 @@ public class BorrowRecordServiceImpl implements BorrowRecordService {
                 .collect(Collectors.toList());
     }
 
+
     @Override
     public BorrowRecordResponseDto borrowBook(BorrowRecordRequestDto requestDto) {
         log.info("Processing borrow request: userId={}, bookId={}", requestDto.getUserId(), requestDto.getBookId());
@@ -66,9 +67,12 @@ public class BorrowRecordServiceImpl implements BorrowRecordService {
                     return new ApiException("User not found with id: " + requestDto.getUserId(), HttpStatus.NOT_FOUND);
                 });
 
+        // User eligibility check
+        checkUserEligibility(user.getId());
+
         BorrowRecord record = borrowRecordMapper.toEntity(requestDto, user, book);
         book.setAvailable(false);
-        // Emit event to notify subscribers that the book has been borrowed (Reactive - WebFlux)
+
         bookAvailabilityService.publishAvailabilityChange(book.getId().toString(), false);
 
         bookRepository.save(book);
@@ -143,5 +147,20 @@ public class BorrowRecordServiceImpl implements BorrowRecordService {
                 .stream()
                 .map(borrowRecordMapper::toResponseDto)
                 .collect(Collectors.toList());
+    }
+
+    private void checkUserEligibility(UUID userId) {
+        int activeBookCount = borrowRecordRepository.countByUserIdAndReturnedFalse(userId);
+        boolean hasOverdueBooks = borrowRecordRepository.existsByUserIdAndReturnedFalseAndDueDateBefore(userId, LocalDate.now());
+
+        if (activeBookCount >= 5) {
+            log.warn("User {} has already borrowed 5 books", userId);
+            throw new ApiException("You have reached the maximum limit of 5 borrowed books.", HttpStatus.BAD_REQUEST);
+        }
+
+        if (hasOverdueBooks) {
+            log.warn("User {} has overdue books", userId);
+            throw new ApiException("You have overdue books. Please return them before borrowing more.", HttpStatus.BAD_REQUEST);
+        }
     }
 }

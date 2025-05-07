@@ -20,4 +20,10 @@ public interface BorrowRecordRepository extends JpaRepository<BorrowRecord, UUID
 
     // Overdue records (not returned and past due date)
     List<BorrowRecord> findByReturnedFalseAndDueDateBefore(LocalDate today);
+
+    // Returns the number of active (unreturned) books
+    int countByUserIdAndReturnedFalse(UUID userId);
+
+    // Are there any overdue books (dueDate < today and not returned)
+    boolean existsByUserIdAndReturnedFalseAndDueDateBefore(UUID userId, LocalDate today);
 }

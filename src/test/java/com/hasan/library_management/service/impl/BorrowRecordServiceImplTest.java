@@ -181,6 +181,57 @@ class BorrowRecordServiceImplTest {
         assertEquals("Book is currently not available for borrowing", ex.getMessage());
     }
 
+
+    @Test
+    void borrowBook_shouldThrowException_whenUserHasAlreadyBorrowed5Books() {
+        // Arrange
+        // Simulate a borrow request where the user has already borrowed 5 books
+        BorrowRecordRequestDto requestDto = new BorrowRecordRequestDto(
+                user.getId(), book.getId(), LocalDate.now(), LocalDate.now().plusDays(7)
+        );
+        book.setAvailable(true);
+
+        when(bookRepository.findById(book.getId())).thenReturn(Optional.of(book));
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+
+        // Simulate that the user has already borrowed 5 books (not returned)
+        when(borrowRecordRepository.countByUserIdAndReturnedFalse(user.getId())).thenReturn(5);
+
+        // Act & Assert
+        ApiException ex = assertThrows(ApiException.class, () -> borrowRecordService.borrowBook(requestDto));
+
+        // Assert that the exception message indicates book limit exceeded
+        assertEquals("You have reached the maximum limit of 5 borrowed books.", ex.getMessage());
+    }
+
+    @Test
+    void borrowBook_shouldThrowException_whenUserHasOverdueBooks() {
+        // Arrange
+        // Simulate a borrow request where the user has overdue books
+        BorrowRecordRequestDto requestDto = new BorrowRecordRequestDto(
+                user.getId(), book.getId(), LocalDate.now(), LocalDate.now().plusDays(7)
+        );
+        book.setAvailable(true);
+
+        when(bookRepository.findById(book.getId())).thenReturn(Optional.of(book));
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+
+        // Simulate that the user has borrowed 2 books
+        when(borrowRecordRepository.countByUserIdAndReturnedFalse(user.getId())).thenReturn(2);
+
+        // Simulate that one of the books is overdue
+        when(borrowRecordRepository.existsByUserIdAndReturnedFalseAndDueDateBefore(user.getId(), LocalDate.now()))
+                .thenReturn(true);
+
+        // Act & Assert
+        ApiException ex = assertThrows(ApiException.class, () -> borrowRecordService.borrowBook(requestDto));
+
+        // Assert that the exception message indicates overdue books
+        assertEquals("You have overdue books. Please return them before borrowing more.", ex.getMessage());
+    }
+
+
+
     // *** returnBook Tests ***
     @Test
     void returnBook_shouldMarkAsReturned_whenValidRequest() {
