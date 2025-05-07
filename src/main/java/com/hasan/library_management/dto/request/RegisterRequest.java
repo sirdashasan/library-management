@@ -3,9 +3,11 @@ package com.hasan.library_management.dto.request;
 import com.hasan.library_management.entity.Role;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

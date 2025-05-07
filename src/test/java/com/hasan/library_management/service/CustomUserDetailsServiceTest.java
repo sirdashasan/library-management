@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.UUID;
 
@@ -63,7 +64,7 @@ class CustomUserDetailsServiceTest {
         when(userRepository.findByEmail(unknownEmail)).thenReturn(java.util.Optional.empty());
 
         // Act & Assert
-        ApiException exception = assertThrows(ApiException.class, () ->
+        UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class, () ->
                 customUserDetailsService.loadUserByUsername(unknownEmail)
         );
 
