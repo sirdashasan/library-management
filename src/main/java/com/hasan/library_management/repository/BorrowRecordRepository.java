@@ -16,6 +16,7 @@ public interface BorrowRecordRepository extends JpaRepository<BorrowRecord, UUID
     List<BorrowRecord> findByBookId(UUID bookId);
 
     // Records that have not been returned yet
+    @SuppressWarnings("unused")
     List<BorrowRecord> findByReturnedFalse();
 
     // Overdue records (not returned and past due date)
