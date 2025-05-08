@@ -52,6 +52,7 @@ public class JwtUtil {
                 .getSubject();
     }
 
+    @SuppressWarnings("unused")
     public String getRoleFromToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
