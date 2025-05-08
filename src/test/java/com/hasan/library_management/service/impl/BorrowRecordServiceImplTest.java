@@ -382,4 +382,26 @@ class BorrowRecordServiceImplTest {
         assertFalse(result.get(0).isReturned());
     }
 
+    // Overdue Report Tests
+    @Test
+    void generateOverdueReport_shouldReturnFormattedText_whenOverdueExists() {
+        // Arrange
+        borrowRecord.setDueDate(LocalDate.now().minusDays(5)); // Overdue
+        borrowRecord.setReturned(false);
+
+        when(borrowRecordRepository.findByReturnedFalseAndDueDateBefore(LocalDate.now()))
+                .thenReturn(List.of(borrowRecord));
+
+        // Act
+        String report = borrowRecordService.generateOverdueReport();
+
+        // Assert
+        assertNotNull(report);
+        assertTrue(report.contains("❗ Overdue Book Report"));
+        assertTrue(report.contains(user.getName()));
+        assertTrue(report.contains(book.getTitle()));
+        assertTrue(report.contains("Returned: ❌ No"));
+    }
+
+
 }

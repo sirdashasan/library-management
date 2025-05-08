@@ -505,5 +505,54 @@ class BorrowRecordControllerTest {
                 .andExpect(status().isForbidden());
     }
 
+    // Overdue Report Tests
+    @Test
+    void generateOverdueReport_shouldReturnOk_whenAuthorized() throws Exception {
+        mockMvc.perform(get("/borrow-records/overdue/report")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isNotEmpty());
+    }
+
+    @Test
+    void generateOverdueReport_shouldReturnUnauthorized_whenNoToken() throws Exception {
+        mockMvc.perform(get("/borrow-records/overdue/report"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void generateOverdueReport_shouldReturnForbidden_whenNotLibrarian() throws Exception {
+
+        RegisterRequest patron = new RegisterRequest();
+        patron.setName("Patron User");
+        patron.setEmail("patron@example.com");
+        patron.setPassword("123456");
+        patron.setPhoneNumber("5550001111");
+        patron.setRole(Role.PATRON);
+
+        mockMvc.perform(post("/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(patron)))
+                .andExpect(status().isOk());
+
+        AuthRequest login = new AuthRequest("patron@example.com", "123456");
+        MvcResult loginResult = mockMvc.perform(post("/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(login)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String patronToken = objectMapper.readTree(loginResult.getResponse().getContentAsString())
+                .get("token").asText();
+
+
+        mockMvc.perform(get("/borrow-records/overdue/report")
+                        .header("Authorization", "Bearer " + patronToken))
+                .andExpect(status().isForbidden());
+    }
+
+
+
+
 
 }

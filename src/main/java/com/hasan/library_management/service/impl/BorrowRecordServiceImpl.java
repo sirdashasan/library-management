@@ -163,4 +163,46 @@ public class BorrowRecordServiceImpl implements BorrowRecordService {
             throw new ApiException("You have overdue books. Please return them before borrowing more.", HttpStatus.BAD_REQUEST);
         }
     }
+
+    @Override
+    public String generateOverdueReport() {
+        List<BorrowRecord> overdueRecords = borrowRecordRepository.findByReturnedFalseAndDueDateBefore(LocalDate.now());
+
+        if (overdueRecords.isEmpty()) {
+            log.info("No overdue records found.");
+            return "No overdue books.";
+        }
+
+        StringBuilder report = new StringBuilder();
+        report.append("❗ Overdue Book Report\n");
+        report.append("========================\n");
+
+        for (BorrowRecord record : overdueRecords) {
+            User user = record.getUser();
+            Book book = record.getBook();
+
+            report.append("User: ").append(user.getName()).append(" (ID: ").append(user.getId()).append(")\n");
+            report.append("Book: ").append(book.getTitle()).append(" (ID: ").append(book.getId()).append(")\n");
+            report.append("Borrowed: ").append(record.getBorrowDate()).append("\n");
+            report.append("Due Date: ").append(record.getDueDate()).append("\n");
+            report.append("Returned: ❌ No\n");
+            report.append("----------------------------------------\n");
+        }
+
+        String reportText = report.toString();
+        log.info("\n{}", reportText);
+
+        try {
+            java.nio.file.Files.writeString(
+                    java.nio.file.Path.of("overdue_report.txt"),
+                    reportText
+            );
+            log.info("Overdue report written to overdue_report.txt");
+        } catch (Exception e) {
+            log.error("Failed to write overdue report to file", e);
+        }
+
+        return reportText;
+    }
+
 }

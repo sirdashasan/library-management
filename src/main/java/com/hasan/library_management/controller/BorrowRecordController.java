@@ -113,4 +113,19 @@ public class BorrowRecordController {
     public ResponseEntity<List<BorrowRecordResponseDto>> getOverdueRecords() {
         return ResponseEntity.ok(borrowRecordService.getOverdueRecords());
     }
+
+    @Operation(
+            summary = "Generate overdue report",
+            description = "Generates a formatted text report for all overdue books, logs it, and writes to a file. Accessible only by librarians."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Report generated successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized - Missing or invalid JWT token"),
+            @ApiResponse(responseCode = "403", description = "Forbidden - You do not have permission to access this resource")
+    })
+    @GetMapping("/overdue/report")
+    public ResponseEntity<String> generateOverdueReport() {
+        String report = borrowRecordService.generateOverdueReport();
+        return ResponseEntity.ok(report);
+    }
 }

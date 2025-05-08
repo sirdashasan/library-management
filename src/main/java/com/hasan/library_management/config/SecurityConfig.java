@@ -64,6 +64,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/borrow-records/return/**").hasAnyRole("PATRON", "LIBRARIAN")
                         .requestMatchers(HttpMethod.GET, "/borrow-records/user/**").hasRole("LIBRARIAN")
                         .requestMatchers(HttpMethod.GET, "/borrow-records/overdue").hasRole("LIBRARIAN")
+                        .requestMatchers(HttpMethod.GET, "/borrow-records/overdue/report").hasRole("LIBRARIAN")
                         .requestMatchers(HttpMethod.GET, "/borrow-records").hasRole("LIBRARIAN")
 
                         // All others
