@@ -59,7 +59,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("LIBRARIAN")
 
                         // Borrowing
-                        .requestMatchers(HttpMethod.GET, "/borrow-records/me").hasRole("PATRON")
+                        .requestMatchers(HttpMethod.GET, "/borrow-records/me").hasAnyRole("PATRON", "LIBRARIAN")
                         .requestMatchers(HttpMethod.POST, "/borrow-records/**").hasAnyRole("PATRON", "LIBRARIAN")
                         .requestMatchers(HttpMethod.PUT, "/borrow-records/return/**").hasAnyRole("PATRON", "LIBRARIAN")
                         .requestMatchers(HttpMethod.GET, "/borrow-records/user/**").hasRole("LIBRARIAN")
