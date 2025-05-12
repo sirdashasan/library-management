@@ -1,6 +1,6 @@
 # 📚 Library Management System
 
-A robust and modern Library Management System built with Java 21 and Spring Boot. This monolithic application supports essential library operations for both **librarians** and **patrons**, including book management, user handling, borrowing and returning books, and real-time availability tracking via reactive streams.
+A robust and modern Library Management System built with Java 21 and Spring Boot. This monolithic application supports essential library operations for both **librarians** and **patrons**, including book management, user handling, borrowing and returning books and real-time availability tracking via reactive streams.
 
 ## 🚀 Features
 
