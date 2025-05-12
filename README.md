@@ -108,3 +108,9 @@ The diagram below shows the relational structure between users, books, and borro
 | Return a book                       | ✅         | ✅      | `PUT /borrow-records/return/{id}`    | Borrow Record   |
 | Report overdue                      | ✅         | ❌      | `GET /borrow-records/overdue/report` | Borrow Record   |
 | Book availability stream            | ✅         | ✅      | `GET /books/availability-stream`     | Book (Reactive) |
+
+## 🧪 Postman Collection
+
+You can test all API endpoints using the provided Postman Collection:
+
+📥 [Download Collection](docs/library-management.postman_collection.json)
