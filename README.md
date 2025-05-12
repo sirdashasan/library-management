@@ -6,7 +6,7 @@ A robust and modern Library Management System built with Java 21 and Spring Boot
 
 For full project explanation, architecture and screenshots, please refer to the PDF below:
 
-📥 [Download Detailed Documentation (PDF)](docs/LibraryDocumentation.pdf)
+📥 [Download Detailed Documentation (PDF)](https://raw.githubusercontent.com/sirdashasan/library-management/main/docs/LibraryDocumentation.pdf)
 
 
 ## 🚀 Features
