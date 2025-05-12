@@ -8,7 +8,6 @@ For full project explanation, architecture and screenshots, please refer to the 
 
 📥 [Download Detailed Documentation (PDF)](https://raw.githubusercontent.com/sirdashasan/library-management/main/docs/LibraryDocumentation.pdf)
 
-
 ## 🚀 Features
 
 - ✅ Role-based Access Control (Librarian vs Patron)
