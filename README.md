@@ -21,7 +21,7 @@ A robust and modern Library Management System built with Java 21 and Spring Boot
 - **Testing**: JUnit 5, Mockito, Reactor Test, Spring Security Test
 - **Build Tool**: Maven
 - **Utilities**: Lombok, dotenv-java
-- - **Frontend (Demo)**: React, JavaScript, Context API, Axios, Tailwind CSS  
+- **Frontend (Demo)**: React, JavaScript, Context API, Axios, Tailwind CSS  
     [GitHub Repository](https://github.com/sirdashasan/library-frontend)
 
 
