@@ -2,6 +2,13 @@
 
 A robust and modern Library Management System built with Java 21 and Spring Boot. This monolithic application supports essential library operations for both **librarians** and **patrons**, including book management, user handling, borrowing and returning books and real-time availability tracking via reactive streams.
 
+## 📄 Detailed Documentation
+
+For full project explanation, architecture and screenshots, please refer to the PDF below:
+
+📥 [Download Detailed Documentation (PDF)](docs/LibraryDocumentation.pdf)
+
+
 ## 🚀 Features
 
 - ✅ Role-based Access Control (Librarian vs Patron)
