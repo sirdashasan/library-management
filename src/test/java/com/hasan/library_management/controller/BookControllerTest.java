@@ -177,7 +177,7 @@ void getAllBooks_shouldReturnForbidden_whenNoToken() throws Exception {
 
     @Test
     void createBook_shouldReturnBadRequest_whenMissingRequiredFields() throws Exception {
-        BookRequestDto bookRequest = new BookRequestDto(); // boş DTO
+        BookRequestDto bookRequest = new BookRequestDto();
 
         mockMvc.perform(post("/books")
                         .header("Authorization", "Bearer " + token)
@@ -267,7 +267,7 @@ void getAllBooks_shouldReturnForbidden_whenNoToken() throws Exception {
 
         // Invalid update (empty title)
         BookRequestDto invalidUpdate = new BookRequestDto();
-        invalidUpdate.setTitle(""); // title boş
+        invalidUpdate.setTitle("");
         invalidUpdate.setAuthor("New Author");
         invalidUpdate.setIsbn("9999999999999");
         invalidUpdate.setGenre("Science");
